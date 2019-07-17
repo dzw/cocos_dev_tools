@@ -41,7 +41,13 @@
                 };
 
                 if (type == 'image') {
-                    from[name] && from[name].url && (to[name].value = base_url + '/' + cc.loader.resPath + '/' + from[name].url);
+                    var url = from[name].url;
+                    if (from[name] && url) {
+                        if (cc.loader.resPath.indexOf(base_url) >= 0)
+                            to[name].value = base_url + "/" + url;
+                        else
+                            to[name].value = base_url + "/" + cc.loader.resPath + "/" + url;
+                    }
                 } else if (type == 'color') {
                     var value = from[name];
                     var r = 255,
@@ -97,7 +103,23 @@
             };
             set_attr(data.attr, node, '__instanceId', 'string', true);
 
-            var attr_hash = InspectElementConfig[node._className] || {};
+            var hierarchy = [];
+            var proto = node.__proto__;
+            while (proto._className) {
+                hierarchy.push(proto._className);
+                proto = proto.__proto__;
+            }
+            var reverse = hierarchy.reverse();
+            var merged_attr = {};
+            for (var i = 0; i < reverse.length; i++) {
+                var clsName = reverse[i];
+                var subAttrs = InspectElementConfig[clsName];
+                for (var attr_key in subAttrs) {
+                    merged_attr[attr_key] = subAttrs[attr_key];
+                }
+            }
+
+            var attr_hash = merged_attr;//InspectElementConfig[node._className] || {};
             for (var attr_name in attr_hash) {
                 set_attr(data.attr, node, attr_name, attr_hash[attr_name].type, attr_hash[attr_name].readonly, attr_hash[attr_name].value, attr_hash[attr_name].desc);
             }
