@@ -8,7 +8,7 @@
     }
 }(this, function(exports) {
     var InspectElement = function() {
-        'use strict';
+        //'use strict';
         var me = this;
         var scene, scene_data = [],
             scene_hash = {};
