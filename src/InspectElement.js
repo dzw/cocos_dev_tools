@@ -139,10 +139,13 @@
             //data.name = node.constructor.name || null;
 
             // find var name form parent
-            for (var i in parent) {
+            for (var field_name in parent) {
                 try {
-                    if (parent[i] && parent[i].__instanceId && parent[i].__instanceId == node.__instanceId) {
-                        data.name = i;
+                    if (parent[field_name]
+                        && parent[field_name].__instanceId
+                        && parent[field_name].__instanceId == node.__instanceId
+                    ) {
+                        data.name = field_name;
                         break;
                     }
                 } catch (e) {
